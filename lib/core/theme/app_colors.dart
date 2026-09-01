@@ -17,6 +17,23 @@ class AppColors {
   static const Color border = Color(0xFFE2E8F0);
   static const Color divider = Color(0xFFE2E8F0);
 
+  // ─── Try-on surfaces ───────────────────────────────────────────────
+  // The try-on experience is dark: a bright UI reflects off the screen and
+  // washes out the camera feed it sits next to. Ported from the web app's
+  // black/neutral palette.
+  static const Color stageBackground = Color(0xFF000000);
+  static const Color stageSurface = Color(0xFF0A0A0A);
+  static const Color stageElevated = Color(0xFF171717);
+  static const Color stageBorder = Color(0x1AFFFFFF);
+  static const Color stageBorderActive = Color(0x66FFFFFF);
+
+  static const Color onStagePrimary = Color(0xFFFFFFFF);
+  static const Color onStageSecondary = Color(0xB3FFFFFF);
+  static const Color onStageMuted = Color(0x80FFFFFF);
+  static const Color onStageFaint = Color(0x4DFFFFFF);
+
+  static const Color live = Color(0xFF4ADE80);
+
   static const Color success = Color(0xFF16A34A);
   static const Color error = Color(0xFFDC2626);
   static const Color warning = Color(0xFFF59E0B);

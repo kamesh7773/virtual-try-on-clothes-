@@ -3,8 +3,68 @@
   "tasks": [
     {
       "label": "Flutter: Create MVVM Feature",
+      "detail": "Scaffolds lib/features/<name>/ with the folder names this project actually uses.",
       "type": "shell",
-      "command": "mkdir -p '${input:folderPath}/${input:featureName}/model' '${input:folderPath}/${input:featureName}/view' '${input:folderPath}/${input:featureName}/viewmodel' '${input:folderPath}/${input:featureName}/repository' && echo '✅ MVVM structure created successfully!'",
+      "command": "mkdir -p '${input:folderPath}/${input:featureName}/models' '${input:folderPath}/${input:featureName}/repositories' '${input:folderPath}/${input:featureName}/view_models' '${input:folderPath}/${input:featureName}/views/widgets' && echo '✅ Created ${input:folderPath}/${input:featureName}/{models,repositories,view_models,views/widgets}'",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Flutter: Build Runner (once)",
+      "detail": "Regenerates Riverpod providers and the typed asset class.",
+      "type": "shell",
+      "command": "dart run build_runner build --delete-conflicting-outputs",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Flutter: Build Runner (watch)",
+      "detail": "Keeps generated files in sync while you edit annotated providers.",
+      "type": "shell",
+      "command": "dart run build_runner watch --delete-conflicting-outputs",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Flutter: Analyze",
+      "type": "shell",
+      "command": "flutter analyze",
+      "group": "test",
+      "problemMatcher": ["$dart-analyze"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Flutter: Test",
+      "type": "shell",
+      "command": "flutter test",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Flutter: Clean + Pub Get",
+      "detail": "Use after switching flavors or when the build cache goes stale.",
+      "type": "shell",
+      "command": "flutter clean && flutter pub get",
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
@@ -16,15 +76,13 @@
     {
       "id": "featureName",
       "type": "promptString",
-      "description": "Enter feature name (e.g. auth, home, profile)"
+      "description": "Feature name in snake_case (e.g. try_on, checkout)"
     },
     {
       "id": "folderPath",
       "type": "pickString",
       "description": "Select base folder",
-      "options": [
-        "lib/features",
-      ],
+      "options": ["lib/features"],
       "default": "lib/features"
     }
   ]

@@ -31,6 +31,6 @@ Future<void> main() async {
   );
 
   runApp(
-    const ProviderScope(child: ObjectTrajectoryTrackingApp()),
+    const ProviderScope(child: VirtualTryOnApp()),
   );
 }

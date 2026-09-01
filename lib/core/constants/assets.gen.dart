@@ -11,6 +11,64 @@
 
 import 'package:flutter/widgets.dart';
 
+class $AssetsDataGen {
+  const $AssetsDataGen();
+
+  /// File path: assets/data/catalog.json
+  String get catalog => 'packages/virtual_try_on/assets/data/catalog.json';
+
+  /// List of all assets
+  List<String> get values => [catalog];
+}
+
+class $AssetsGarmentsGen {
+  const $AssetsGarmentsGen();
+
+  /// File path: assets/garments/polo-brown-contrast.jpg
+  AssetGenImage get poloBrownContrast =>
+      const AssetGenImage('assets/garments/polo-brown-contrast.jpg');
+
+  /// File path: assets/garments/polo-cream-knit.jpg
+  AssetGenImage get poloCreamKnit =>
+      const AssetGenImage('assets/garments/polo-cream-knit.jpg');
+
+  /// File path: assets/garments/polo-green-textured.jpg
+  AssetGenImage get poloGreenTextured =>
+      const AssetGenImage('assets/garments/polo-green-textured.jpg');
+
+  /// File path: assets/garments/polo-sage-printed.jpg
+  AssetGenImage get poloSagePrinted =>
+      const AssetGenImage('assets/garments/polo-sage-printed.jpg');
+
+  /// File path: assets/garments/shirt-plaid-corduroy.jpg
+  AssetGenImage get shirtPlaidCorduroy =>
+      const AssetGenImage('assets/garments/shirt-plaid-corduroy.jpg');
+
+  /// File path: assets/garments/shirt-sky-blue.jpg
+  AssetGenImage get shirtSkyBlue =>
+      const AssetGenImage('assets/garments/shirt-sky-blue.jpg');
+
+  /// File path: assets/garments/tshirt-black-heavyweight.jpg
+  AssetGenImage get tshirtBlackHeavyweight =>
+      const AssetGenImage('assets/garments/tshirt-black-heavyweight.jpg');
+
+  /// File path: assets/garments/tshirt-white-basic.jpg
+  AssetGenImage get tshirtWhiteBasic =>
+      const AssetGenImage('assets/garments/tshirt-white-basic.jpg');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [
+    poloBrownContrast,
+    poloCreamKnit,
+    poloGreenTextured,
+    poloSagePrinted,
+    shirtPlaidCorduroy,
+    shirtSkyBlue,
+    tshirtBlackHeavyweight,
+    tshirtWhiteBasic,
+  ];
+}
+
 class $AssetsIconsGen {
   const $AssetsIconsGen();
 
@@ -28,8 +86,10 @@ class $AssetsIconsGen {
 class AppAssets {
   const AppAssets._();
 
-  static const String package = 'base_flutter_application';
+  static const String package = 'virtual_try_on';
 
+  static const $AssetsDataGen data = $AssetsDataGen();
+  static const $AssetsGarmentsGen garments = $AssetsGarmentsGen();
   static const $AssetsIconsGen icons = $AssetsIconsGen();
 }
 
@@ -43,7 +103,7 @@ class AssetGenImage {
 
   final String _assetName;
 
-  static const String package = 'base_flutter_application';
+  static const String package = 'virtual_try_on';
 
   final Size? size;
   final Set<String> flavors;
@@ -113,7 +173,7 @@ class AssetGenImage {
 
   String get path => _assetName;
 
-  String get keyName => 'packages/base_flutter_application/$_assetName';
+  String get keyName => 'packages/virtual_try_on/$_assetName';
 }
 
 class AssetGenImageAnimation {

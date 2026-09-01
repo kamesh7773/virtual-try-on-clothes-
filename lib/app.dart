@@ -12,8 +12,8 @@ import 'core/routes/routes.dart';
 import 'core/services/navigation_service.dart';
 import 'core/theme/app_theme.dart';
 
-class ObjectTrajectoryTrackingApp extends ConsumerWidget {
-  const ObjectTrajectoryTrackingApp({super.key});
+class VirtualTryOnApp extends ConsumerWidget {
+  const VirtualTryOnApp({super.key});
 
   String get _appTitle {
     if (Env.isDevelopment) return '${AppConstants.appName} Dev';
@@ -45,7 +45,7 @@ class ObjectTrajectoryTrackingApp extends ConsumerWidget {
           ],
           supportedLocales: const [Locale('en', 'US')],
           locale: const Locale('en', 'US'),
-          initialRoute: Routes.splash,
+          initialRoute: Routes.tryOn,
           onGenerateRoute: RouteGenerator.generateRoute,
           builder: (context, child) {
             final content = ToastificationWrapper(

@@ -1,5 +1,22 @@
 {
-    "yaml.schemas": {
-        "https://www.schemastore.org/pubspec.json": "file:///Users/maxaix/Developer/flutter%20projects/Maxaix/base_flutter_application/pubspec.yaml"
-    }
+  "yaml.schemas": {
+    "https://www.schemastore.org/pubspec.json": "pubspec.yaml"
+  },
+  "dart.flutterSdkPath": null,
+  "[dart]": {
+    "editor.formatOnSave": true,
+    "editor.rulers": [80],
+    "editor.selectionHighlight": false,
+    "editor.tabCompletion": "onlySnippets",
+    "editor.wordBasedSuggestions": "off"
+  },
+  "files.exclude": {
+    "**/*.g.dart": false
+  },
+  "search.exclude": {
+    "**/build": true,
+    "**/.dart_tool": true,
+    "**/ios/Pods": true,
+    "**/*.g.dart": true
+  }
 }

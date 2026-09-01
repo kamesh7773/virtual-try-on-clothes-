@@ -8,11 +8,11 @@ import 'api_client.dart';
 ///
 /// ```dart
 /// @riverpod
-/// AuthRepository authRepository(Ref ref) => AuthRepository(ref);
+/// TryOnRepository tryOnRepository(Ref ref) => TryOnRepository(ref);
 ///
-/// class AuthRepository extends BaseApiService {
-///   AuthRepository(Ref ref) : super(ref);
-///   Future<Response> login(...) => post('/auth/login', data: ...);
+/// class TryOnRepository extends BaseApiService {
+///   TryOnRepository(Ref ref) : super(ref);
+///   Future<Response> createToken() => post('/v1/tokens', data: ...);
 /// }
 /// ```
 abstract class BaseApiService {

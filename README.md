@@ -1,6 +1,6 @@
-# base_flutter_application
+# LiveLook — Virtual Try-On
 
-This is a **base Flutter repo** to start any new project that uses **Riverpod**, **Flutter Hooks**, and **flavoring** (development / staging / production). Everything is already wired up — clone it, rename it, and start building features.
+Flutter app for real-time virtual try-on, built on a **Riverpod + Flutter Hooks + flavors** base. Ported from the `next_js_project` web app; the try-on stream is powered by the Decart API.
 
 If you're starting a project with this stack, use this repo as your starting point instead of setting things up from scratch.
 

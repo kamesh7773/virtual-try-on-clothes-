@@ -1,5 +1,5 @@
-name: base_flutter_application
-description: "A new Flutter project."
+name: virtual_try_on
+description: "LiveLook — real-time virtual try-on powered by Decart."
 publish_to: "none"
 version: 1.0.0+1
 
@@ -47,6 +47,9 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^6.0.0
 
+  # Lets tests swap in a fake permission platform instead of the real channel.
+  permission_handler_platform_interface: ^4.3.0
+
   # Code Generation
   build_runner: ^2.4.14
   riverpod_generator: ">=4.0.0 <4.0.2"
@@ -77,10 +80,9 @@ flutter_gen:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/
-    - assets/svg/
     - assets/icons/
-    - assets/fonts/
+    - assets/garments/
+    - assets/data/
     - .env.development
     - .env.staging
     - .env.production

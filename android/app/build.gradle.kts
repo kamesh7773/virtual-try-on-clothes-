@@ -33,17 +33,17 @@ android {
             dimension = "environment"
             applicationIdSuffix = ".dev"
             versionNameSuffix = "-dev"
-            resValue("string", "app_name", "Flutter Dev")
+            resValue("string", "app_name", "LiveLook Dev")
         }
         create("staging") {
             dimension = "environment"
             applicationIdSuffix = ".staging"
             versionNameSuffix = "-staging"
-            resValue("string", "app_name", "Flutter Staging")
+            resValue("string", "app_name", "LiveLook Staging")
         }
         create("production") {
             dimension = "environment"
-            resValue("string", "app_name", "Flutter")
+            resValue("string", "app_name", "LiveLook")
         }
     }
 

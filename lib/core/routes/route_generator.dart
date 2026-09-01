@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../features/auth/views/login_screen.dart';
-import '../../features/auth/views/splash_screen.dart';
-import '../../features/home/views/home_screen.dart';
-import 'route_arguments.dart';
+import '../../features/try_on/views/try_on_screen.dart';
 import 'routes.dart';
 
 class RouteGenerator {
@@ -11,21 +8,10 @@ class RouteGenerator {
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
-      case Routes.splash:
+      case Routes.tryOn:
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => const SplashScreen(),
-        );
-      case Routes.login:
-        final args = settings.arguments as LoginScreenArgs?;
-        return MaterialPageRoute(
-          settings: settings,
-          builder: (_) => LoginScreen(args: args ?? const LoginScreenArgs()),
-        );
-      case Routes.home:
-        return MaterialPageRoute(
-          settings: settings,
-          builder: (_) => const HomeScreen(),
+          builder: (_) => const TryOnScreen(),
         );
 
       default:

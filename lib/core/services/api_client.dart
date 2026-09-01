@@ -27,7 +27,7 @@ Dio apiClient(Ref ref) {
     ),
   );
 
-  dio.interceptors.add(_authInterceptor(dio, ref));
+  dio.interceptors.add(_apiKeyInterceptor(ref));
 
   if (Env.enableLogs && kDebugMode) {
     dio.interceptors.add(
@@ -46,58 +46,36 @@ Dio apiClient(Ref ref) {
   return dio;
 }
 
-bool _isAuthFreeEndpoint(String path) =>
-    path.endsWith(ApiEndpoints.login) ||
-    path.endsWith(ApiEndpoints.refreshToken);
-
-Interceptor _authInterceptor(Dio dio, Ref ref) {
+/// Attaches the Decart API key as a bearer token and normalises Dio errors
+/// into a human-readable message.
+///
+/// The key is resolved the same way the web app resolves it: a user-supplied
+/// key in secure storage wins, otherwise the build-time key from `.env.*`.
+/// There is no login or refresh-token flow — Decart authenticates with a
+/// single API key, so a 401 here means the key is missing or invalid.
+Interceptor _apiKeyInterceptor(Ref ref) {
   return InterceptorsWrapper(
     onRequest: (options, handler) async {
-      final apiToken = Env.apiToken;
-      if (apiToken != null && apiToken.isNotEmpty) {
-        options.headers['Api-Token'] = apiToken;
-      }
+      final storage = ref.read(secureStorageServiceProvider.notifier);
+      final apiKey = await storage.getApiKey() ?? Env.decartApiKey;
 
-      if (!_isAuthFreeEndpoint(options.path)) {
-        final storage = ref.read(secureStorageServiceProvider.notifier);
-        final token = await storage.getToken();
-        if (token != null) {
-          options.headers['Authorization'] = 'Bearer $token';
-        }
+      if (apiKey != null && apiKey.isNotEmpty) {
+        options.headers['Authorization'] = 'Bearer $apiKey';
       }
 
       return handler.next(options);
     },
-    onError: (error, handler) async {
-      final storage = ref.read(secureStorageServiceProvider.notifier);
-
-      final canRefresh = error.response?.statusCode == 401 &&
-          !_isAuthFreeEndpoint(error.requestOptions.path);
-
-      if (canRefresh) {
-        final tokens = await _refreshTokens(dio, storage);
-        if (tokens != null) {
-          final retry = error.requestOptions;
-          retry.headers['Authorization'] = 'Bearer ${tokens.$1}';
-          try {
-            final response = await dio.fetch(retry);
-            return handler.resolve(response);
-          } catch (_) {
-            // fall through to error mapping below
-          }
-        } else {
-          // Refresh failed (or no refresh token) — clear stored creds so the
-          // auth gate flips back to the login screen on next bootstrap.
-          await storage.deleteTokens();
-        }
-      }
-
+    onError: (error, handler) {
       String message = 'Something went wrong';
+
       if (error.type == DioExceptionType.connectionTimeout ||
           error.type == DioExceptionType.receiveTimeout ||
           error.type == DioExceptionType.sendTimeout ||
           error.type == DioExceptionType.connectionError) {
         message = 'No internet connection, please check your connection';
+      } else if (error.response?.statusCode == 401 ||
+          error.response?.statusCode == 403) {
+        message = 'Invalid or missing Decart API key';
       } else if (error.response?.data is Map<String, dynamic>) {
         final data = error.response!.data as Map<String, dynamic>;
         if (data['message'] != null) {
@@ -118,33 +96,4 @@ Interceptor _authInterceptor(Dio dio, Ref ref) {
       );
     },
   );
-}
-
-/// Calls the Platzi refresh endpoint and stores the new tokens.
-/// Returns `(accessToken, refreshToken)` on success, otherwise `null`.
-Future<(String, String)?> _refreshTokens(
-  Dio dio,
-  SecureStorageService storage,
-) async {
-  try {
-    final refresh = await storage.getRefreshToken();
-    if (refresh == null) return null;
-
-    final response = await dio.post(
-      ApiEndpoints.refreshToken,
-      data: {'refreshToken': refresh},
-    );
-
-    if (response.data is! Map<String, dynamic>) return null;
-    final data = response.data as Map<String, dynamic>;
-    final access = data['access_token'] as String?;
-    final newRefresh = data['refresh_token'] as String?;
-    if (access == null || newRefresh == null) return null;
-
-    await storage.saveToken(access);
-    await storage.saveRefreshToken(newRefresh);
-    return (access, newRefresh);
-  } catch (_) {
-    return null;
-  }
 }
