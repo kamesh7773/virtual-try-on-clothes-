@@ -1,0 +1,4 @@
+#include "Staging.xcconfig"
+#include "Pods/Target Support Files/Pods-Runner/Pods-Runner.release-staging.xcconfig"
+
+BUILD_LIBRARY_FOR_DISTRIBUTION = NO

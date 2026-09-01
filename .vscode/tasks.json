@@ -1,0 +1,31 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Flutter: Create MVVM Feature",
+      "type": "shell",
+      "command": "mkdir -p '${input:folderPath}/${input:featureName}/model' '${input:folderPath}/${input:featureName}/view' '${input:folderPath}/${input:featureName}/viewmodel' '${input:folderPath}/${input:featureName}/repository' && echo '✅ MVVM structure created successfully!'",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "id": "featureName",
+      "type": "promptString",
+      "description": "Enter feature name (e.g. auth, home, profile)"
+    },
+    {
+      "id": "folderPath",
+      "type": "pickString",
+      "description": "Select base folder",
+      "options": [
+        "lib/features",
+      ],
+      "default": "lib/features"
+    }
+  ]
+}

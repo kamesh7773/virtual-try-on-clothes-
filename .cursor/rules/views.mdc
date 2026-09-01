@@ -1,0 +1,239 @@
+---
+description: Guidelines for implementing views and widgets in the Indikosh app
+globs: 
+alwaysApply: false
+---
+---
+description: Guidelines for implementing views and widgets in the Indikosh app
+globs: lib/**/views/**/*.dart
+alwaysApply: false
+---
+## View Implementation
+
+- Use HookConsumerWidget
+- Watch state with ref.watch
+- Handle loading/errors
+- Validate inputs
+- Implement proper auth flow
+- Use custom hooks for lifecycle management
+
+## Custom Hooks for Screen Lifecycle
+
+1. Screen Lifecycle Management: 
+   Use the appropriate hooks for managing different aspects of screen lifecycle:
+
+   ```dart
+   // 1. Handle screen focus (when returning from another screen)
+   final focusNode = useScreenFocus(
+     ref,
+     isRefreshing: isRefreshing,
+     onFocusGained: () => viewModel.refreshData(),
+   );
+   
+   // 2. Handle app lifecycle (background/foreground transitions)
+   useAppLifecycle(
+     ref,
+     isRefreshing: isRefreshing,
+     onResumeFromBackground: () => viewModel.resubscribeToSources(),
+   );
+   
+   // 3. Handle initial data loading
+   useInitialLoad(ref, onLoad: () {
+     viewModel.fetchInitialData();
+   });
+   
+   // 4. Use the focusNode in your Focus widget
+   return Focus(
+     focusNode: focusNode,
+     autofocus: true,
+     child: YourScreenContent(),
+   );
+   ```
+
+2. When to use each hook:
+   - `useScreenFocus`: When the screen needs to refresh data after navigation
+   - `useAppLifecycle`: When the screen manages connections (WebSockets, streams) that need handling on app background/foreground
+   - `useInitialLoad`: For initial data loading when the screen mounts
+   - All screens should share a common state variable for tracking refresh operations
+
+3. Shared Refresh State Pattern:
+   ```dart
+   // At the beginning of your build method:
+   final isRefreshing = useState(false);
+   
+   // Share this state between hooks to prevent duplicate refreshes
+   ```
+
+## Color Usage
+
+1. Opacity:
+   - Use `withValues(alpha: value)` instead of deprecated `withOpacity(value)`
+   - Example: `Colors.black.withValues(alpha: 0.1)` instead of `Colors.black.withOpacity(0.1)`
+   - Alpha values should be between 0 and 1 (0.1 opacity = .1 alpha)
+
+### Example View:
+```dart
+class AuthWrapper extends HookConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authState = ref.watch(authServiceProvider);
+    final profileState = ref.watch(profileViewModelProvider);
+    final isRefreshing = useState(false);
+    
+    // Handle app lifecycle
+    useAppLifecycle(
+      ref,
+      isRefreshing: isRefreshing,
+      onResumeFromBackground: () => ref.read(authServiceProvider.notifier).refreshToken(),
+    );
+    
+    // Handle initial load
+    useInitialLoad(ref, onLoad: () {
+      if (authState.hasValue && authState.value != AuthType.none) {
+        ref.read(profileViewModelProvider.notifier).getUserProfile();
+      }
+    });
+
+    // Handle loading state
+    if (authState.isLoading || profileState.isLoading) {
+      return const LoadingScreen();
+    }
+
+    // Handle profile status based on auth type
+    if (profileState.profile != null) {
+      switch (profileState.profile!.status) {
+        case ProfileStatus.approved:
+          return const HomeScreen();
+        case ProfileStatus.pending:
+          return const PendingApprovalScreen();
+        case ProfileStatus.rejected:
+          return const RejectedScreen();
+        case ProfileStatus.block:
+          return const BlockedScreen();
+      }
+    }
+
+    return const LoginScreen();
+  }
+}
+```
+
+## Form Handling
+
+1. Form Controllers:
+```dart
+// Using useMemoized for controllers
+final controllers = useMemoized(
+  () => {
+    'email': TextEditingController(),
+    'password': TextEditingController(),
+  },
+  const [],
+);
+
+// Dispose controllers
+useEffect(() {
+  return () {
+    for (final controller in controllers.values) {
+      controller.dispose();
+    }
+  };
+}, const []);
+```
+
+2. Input Validation:
+```dart
+// Phone number
+FilteringTextInputFormatter.digitsOnly,
+LengthLimitingTextInputFormatter(10),
+
+// Date formatter
+TextInputFormatter dateFormatter() {
+  return TextInputFormatter.withFunction((oldValue, newValue) {
+    var text = newValue.text;
+    if (text.length > 8) return oldValue;
+    text = text.replaceAll(RegExp(r'[^\d]'), '');
+    if (text.length >= 2) {
+      text = '${text.substring(0, 2)}/${text.substring(2)}';
+    }
+    if (text.length >= 5) {
+      text = '${text.substring(0, 5)}/${text.substring(5)}';
+    }
+    return TextEditingValue(
+      text: text,
+      selection: TextSelection.collapsed(offset: text.length),
+    );
+  });
+}
+```
+
+3. Color Management
+
+- Use `withValues(alpha: value)` instead of `withOpacity(value)` for opacity adjustments
+- `withOpacity()` is deprecated and should be avoided
+- Ensure consistent color opacity throughout the app
+- Example:
+
+```dart
+// Correct approach
+BoxShadow(
+  color: Colors.black.withValues(alpha: 0.25),
+  blurRadius: 10,
+)
+
+// Incorrect approach (deprecated)
+BoxShadow(
+  color: Colors.black.withOpacity(0.25),
+  blurRadius: 10,
+)
+```
+
+## UI Feedback
+
+1. Success Messages:
+   - Green color (CAF50)
+   - Auto-dismiss after 8s
+   - Clear action description
+
+2. Error Messages:
+   - Red color (64238)
+   - Auto-dismiss after 8s
+   - User-friendly error description
+   - Actionable solution when possible
+
+3. Loading States:
+   - Show progress indicators
+   - Disable interactions
+   - Maintain UI consistency
+
+## Asset Management
+
+1. Flutter Assets Generator:
+   - Always run `fluttergen -c ./pubspec.yaml` after adding any new assets
+   - Command regenerates the asset references in `lib/core/constants/assets.gen.dart`
+
+2. Referencing Assets:
+   - Use generated asset references instead of string paths
+   - Example: `IndikoshAssets.svg.flightVector.path` instead of 'assets/svg/flight_vector.svg'
+   - Benefits:
+     - Type-safe access
+     - Compile-time validation
+     - Auto-completion support
+     - Prevents typos and missing asset errors
+
+3. Example Asset Usage:
+```dart
+// Correct approach (using generated assets)
+SvgPicture.asset(
+  IndikoshAssets.svg.flightVector.path,
+  width: 24.w,
+  height: 24.h,
+)
+
+// Incorrect approach (using string paths)
+SvgPicture.asset(
+  'assets/svg/flight_vector.svg',
+  width: 24.w,
+  height: 24.h,
+)
+```
