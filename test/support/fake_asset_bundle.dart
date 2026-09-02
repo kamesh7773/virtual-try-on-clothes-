@@ -30,7 +30,7 @@ const String kTestCatalogJson = '''
       "name": "Test Polo",
       "type": "polo",
       "description": "First test garment",
-      "prompt": "Substitute the current top with a test polo",
+      "prompt": "Substitute the upper body garment with a test polo",
       "image": "assets/garments/polo-green-textured.jpg"
     },
     {
@@ -38,7 +38,7 @@ const String kTestCatalogJson = '''
       "name": "Test Shirt",
       "type": "shirt",
       "description": "Second test garment",
-      "prompt": "Substitute the current top with a test shirt",
+      "prompt": "Substitute the upper body garment with a test shirt",
       "image": "assets/garments/shirt-sky-blue.jpg"
     }
   ]

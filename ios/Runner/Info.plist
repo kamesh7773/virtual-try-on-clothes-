@@ -22,6 +22,13 @@
 		<string>????</string>
 		<key>CFBundleVersion</key>
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
+		<!-- Declares that the app uses no non-exempt encryption, so App Store
+		     Connect stops asking the export-compliance question on every upload
+		     and builds skip the "Missing Compliance" hold. The app only speaks
+		     HTTPS/WSS and WebRTC's standard DTLS-SRTP; it ships no cryptography
+		     of its own. -->
+		<key>ITSAppUsesNonExemptEncryption</key>
+		<false/>
 		<key>NSCameraUsageDescription</key>
 		<string>LiveLook uses your camera to show garments on you in real time.</string>
 		<key>NSMicrophoneUsageDescription</key>

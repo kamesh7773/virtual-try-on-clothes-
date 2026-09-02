@@ -17,7 +17,7 @@ const _garment = GarmentModel(
   name: 'Test Polo',
   type: 'polo',
   description: 'A test garment',
-  prompt: 'Substitute the current top with a test polo',
+  prompt: 'Substitute the upper body garment with a test polo',
   image: 'assets/garments/test.jpg',
 );
 
