@@ -41,6 +41,7 @@ class _FakeService extends DecartSessionService {
   Future<void> initialize({
     required String apiKey,
     required String baseUrl,
+    required String wsBaseUrl,
     required String model,
   }) async {
     initializeCount++;

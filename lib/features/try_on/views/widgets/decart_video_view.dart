@@ -34,20 +34,30 @@ class DecartVideoView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (defaultTargetPlatform != TargetPlatform.iOS) {
-      return const _VideoUnavailable();
-    }
+    // Rebuilding under a new key would tear down the renderer, so each source
+    // keeps its own view for the life of the screen.
+    final key = ValueKey(source);
+    final params = <String, dynamic>{'source': source.name};
+    // Swipe and taps belong to Flutter; the video is not interactive.
+    const recognizers = <Factory<OneSequenceGestureRecognizer>>{};
 
-    return UiKitView(
-      // Rebuilding under a new key would tear down the renderer, so each
-      // source keeps its own view for the life of the screen.
-      key: ValueKey(source),
-      viewType: viewType,
-      creationParams: <String, dynamic>{'source': source.name},
-      creationParamsCodec: const StandardMessageCodec(),
-      // Swipe and taps belong to Flutter; the video is not interactive.
-      gestureRecognizers: const <Factory<OneSequenceGestureRecognizer>>{},
-    );
+    return switch (defaultTargetPlatform) {
+      TargetPlatform.iOS => UiKitView(
+          key: key,
+          viewType: viewType,
+          creationParams: params,
+          creationParamsCodec: const StandardMessageCodec(),
+          gestureRecognizers: recognizers,
+        ),
+      TargetPlatform.android => AndroidView(
+          key: key,
+          viewType: viewType,
+          creationParams: params,
+          creationParamsCodec: const StandardMessageCodec(),
+          gestureRecognizers: recognizers,
+        ),
+      _ => const _VideoUnavailable(),
+    };
   }
 }
 
@@ -71,7 +81,7 @@ class _VideoUnavailable extends StatelessWidget {
               ),
               SizedBox(height: 12.h),
               Text(
-                'Live try-on is iOS-only for now',
+                'Live try-on is not supported on this platform',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 12.sp,

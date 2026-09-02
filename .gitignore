@@ -47,4 +47,3 @@ app.*.map.json
 # Environment files (load via flutter_dotenv assets; keep out of VCS)
 .env
 .env.*
-!.env.example

@@ -117,6 +117,10 @@ final class DecartSessionBridge {
     } catch {
       manager = nil
       cancelObservation()
+      // The room may have started publishing before it failed, which stops
+      // the capture track and would strand the preview on a frozen frame.
+      await restartLocalCamera()
+      rebindViews()
       emit(state: "error", message: describe(error))
       throw error
     }
@@ -143,8 +147,34 @@ final class DecartSessionBridge {
     remoteStream = nil
     cancelObservation()
 
+    await restartLocalCamera()
+
     rebindViews()
     emit(state: "disconnected")
+  }
+
+  /// Rebuilds the capture track after a session ends.
+  ///
+  /// The local track is published into the LiveKit room, and closing the room
+  /// stops it. The track object survives, so the preview keeps rendering its
+  /// last frame and looks frozen — only a fresh capture track brings the
+  /// camera back.
+  private func restartLocalCamera() async {
+    if let previous = localStream?.videoTrack as? LocalVideoTrack {
+      // Release the camera before claiming it again; two capturers on one
+      // device do not coexist.
+      try? await previous.stop()
+    }
+    localStream = nil
+
+    views.removeAll { $0.value == nil }
+
+    // Disconnecting also happens when the screen goes away. Reopening the
+    // camera then would hold the device — and its recording indicator — open
+    // with nothing rendering it.
+    guard !views.isEmpty, let client, let model else { return }
+
+    localStream = client.createLocalCameraStream(model: model, mirror: .auto)
   }
 
   // MARK: - Observation

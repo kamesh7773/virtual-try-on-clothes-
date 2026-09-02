@@ -1,4 +1,21 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Reaching Decart. Flutter injects this into debug/profile builds for its
+         own tooling, so leaving it out here breaks release builds only. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- The try-on stream is the camera. Without this line permission_handler
+         reports permanentlyDenied and never shows a dialog. -->
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- The realtime SDK negotiates an audio track alongside video even though
+         nothing is recorded or sent. -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <!-- Requesting CAMERA makes Play assume the hardware is required; say so
+         explicitly rather than leaving it implicit. The app is a mirror, so a
+         device with no camera cannot use it at all. -->
+    <uses-feature android:name="android.hardware.camera" android:required="true" />
+
     <application
         android:label="@string/app_name"
         android:name="${applicationName}"

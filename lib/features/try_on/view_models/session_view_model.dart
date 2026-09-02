@@ -81,6 +81,7 @@ class SessionViewModel extends _$SessionViewModel {
       await _service.initialize(
         apiKey: apiKey,
         baseUrl: Env.apiBaseUrl,
+        wsBaseUrl: Env.apiWsBaseUrl,
         model: Env.realtimeModel,
       );
       if (!ref.mounted) return;

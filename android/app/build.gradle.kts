@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.baseapp"
+    namespace = "com.livelook.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -20,7 +20,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.baseapp"
+        applicationId = "com.livelook.app"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
@@ -58,4 +58,10 @@ android {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    // Realtime try-on. Pulls LiveKit in transitively; the video renderer and
+    // Room types used by the platform view come from there.
+    implementation("com.github.DecartAI:decart-android:0.7.10")
 }

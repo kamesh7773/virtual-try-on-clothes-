@@ -41,11 +41,15 @@ class DecartSessionService {
   Future<void> initialize({
     required String apiKey,
     required String baseUrl,
+    required String wsBaseUrl,
     required String model,
   }) =>
       _methods.invokeMethod<void>('initialize', {
         'apiKey': apiKey,
         'baseUrl': baseUrl,
+        // Android's client wants the signalling socket and the REST host as
+        // separate values; iOS derives the socket itself and ignores this.
+        'wsBaseUrl': wsBaseUrl,
         'model': model,
       });
 
